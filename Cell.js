@@ -19,6 +19,11 @@ class Cell {
                 textAlign(CENTER, CENTER);
                 text(this.type, this.x + 20, this.y + 20);
                 pop();
+            } else if (this.type == "bomb") {
+                push();
+                fill(0);
+                circle(this.x + 20, this.y + 20, 20);
+                pop();
             }
         }
     }
