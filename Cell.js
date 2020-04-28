@@ -11,7 +11,7 @@ class Cell {
             fill(51);
             rect(this.x, this.y, 40, 40);
         } else {
-            if (typeof this.type == Number) {
+            if (typeof this.type == Number && this.type >= 1) {
                 push();
                 colorMode(HSB);
                 fill(this.type * 36, 100, 100);
