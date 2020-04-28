@@ -8,6 +8,9 @@ function setup() {
             board[r][c] = new Cell(r * 40, c * 40, "nothing");
         }
     }
+    for (let i = 0; i < 11; i++) {
+        random(random(board)).type = "bomb";
+    }
 }
 
 function draw() {
