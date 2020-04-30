@@ -5,18 +5,16 @@ function setup() {
     for (let r = 0; r < 10; r++) {
         board[r] = [];
         for (let c = 0; c < 10; c++) {
-            board[r][c] = new Cell(r * 40, c * 40, "nothing");
+            board[r][c] = new Cell(r * 40, c * 40, 0);
         }
     }
     for (let i = 0; i < 11; i++) {
-        random(random(board)).type = -1;
-    }
-    for (let i = 0; i < board.length; i++) {
-        for (let j = 0; j < board[i].length; j++) {
-            if (countBombNeighbors(i, j) > 0) {
-                board[i][j].type = countBombNeighbors(i, j);
-            }
-        }
+        let bombCellPos = [
+            floor(random(board.length)),
+            floor(random(board.length)),
+        ];
+        board[bombCellPos[0]][bombCellPos[1]].type = -1;
+        add1toNeighbors(bombCellPos[0], bombCellPos[1]);
     }
 }
 
@@ -39,25 +37,51 @@ function mousePressed() {
                 element.y + 40 >= mouseY
             ) {
                 element.clicked = true;
+                if (element.type == -1) {
+                    noLoop();
+                    board.forEach((element) => {
+                        element.forEach((element) => {
+                            if (element.type == -1) {
+                                element.clicked = true;
+                            }
+                        });
+                    });
+
+                    alert("Game Over");
+                }
                 return;
             }
         });
     });
 }
 
-function countBombNeighbors(x, y) {
-    let bombNeighbors = 0;
+function add1toNeighbors(x, y) {
     for (let i = -1; i <= 1; i++) {
         for (let j = -1; j <= 1; j++) {
             if (i + x >= 0 && i + x < 10 && j + y >= 0 && j + y < 10) {
-                if (board[i + x][j + y].type == -1) {
-                    bombNeighbors++;
+                if (board[i + x][j + y].type > -1 && !(i == 0 && j == 0)) {
+                    board[i + x][j + y].type++;
                 }
             }
         }
     }
-    if (board[x][y].type == -1) {
-        bombNeighbors--;
+}
+
+function openNeighbors(x, y) {
+    for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+            if (i + x < 0 || i + x >= 10 || j + y < 0 || j  + y >= 10) {
+                return;
+            }
+        }
     }
-    return bombNeighbors;
+    for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+            if (i + x >= 0 && i + x < 10 && j + y >= 0 && j + y < 10) {
+                if (board[i + x][j + y].type > -1 && !(i == 0 && j == 0)) {
+                    board[i + x][j + y].clicked = true;
+                }
+            }
+        }
+    }
 }
