@@ -9,7 +9,14 @@ function setup() {
         }
     }
     for (let i = 0; i < 11; i++) {
-        random(random(board)).type = "bomb";
+        random(random(board)).type = -1;
+    }
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+            if (countBombNeighbors(i, j) > 0) {
+                board[i][j].type = countBombNeighbors(i, j);
+            }
+        }
     }
 }
 
@@ -36,4 +43,21 @@ function mousePressed() {
             }
         });
     });
+}
+
+function countBombNeighbors(x, y) {
+    let bombNeighbors = 0;
+    for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+            if (i + x >= 0 && i + x < 10 && j + y >= 0 && j + y < 10) {
+                if (board[i + x][j + y].type == -1) {
+                    bombNeighbors++;
+                }
+            }
+        }
+    }
+    if (board[x][y].type == -1) {
+        bombNeighbors--;
+    }
+    return bombNeighbors;
 }
