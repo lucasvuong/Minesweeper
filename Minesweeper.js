@@ -13,6 +13,12 @@ function setup() {
             floor(random(board.length)),
             floor(random(board.length)),
         ];
+        while (board[bombCellPos[0]][bombCellPos[1]].type == -1) {
+            bombCellPos = [
+                floor(random(board.length)),
+                floor(random(board.length)),
+            ];
+        }
         board[bombCellPos[0]][bombCellPos[1]].type = -1;
         add1toNeighbors(bombCellPos[0], bombCellPos[1]);
     }
@@ -46,8 +52,9 @@ function mousePressed() {
                             }
                         });
                     });
-
                     alert("Game Over");
+                } else if (element.type == 0) {
+                    openNeighbors(element.x / 40, element.y / 40);
                 }
                 return;
             }
@@ -68,18 +75,36 @@ function add1toNeighbors(x, y) {
 }
 
 function openNeighbors(x, y) {
-    for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-            if (i + x < 0 || i + x >= 10 || j + y < 0 || j  + y >= 10) {
-                return;
+    if (board[x][y].type > 0) {
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                if (i + x < 0 || i + x >= 10 || j + y < 0 || j + y >= 10) {
+                    return;
+                }
             }
         }
     }
-    for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-            if (i + x >= 0 && i + x < 10 && j + y >= 0 && j + y < 10) {
-                if (board[i + x][j + y].type > -1 && !(i == 0 && j == 0)) {
+    if (board[x][y].type == 0) {
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                if (i + x >= 0 && i + x < 10 && j + y >= 0 && j + y < 10) {
+                    if (!board[i + x][j + y].clicked) {
+                        if (board[i + x][j + y].type == 0) {
+                            board[i + x][j + y].clicked = true;
+                            openNeighbors(i + x, j + y);
+                        } else if (board[i + x][j + y].type > 0) {
+                            board[i + x][j + y].clicked = true;
+                        }
+                    }
+                }
+            }
+        }
+    } else if (board[x][y].type > 0) {
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                if (board[i + x][j + y].type > -1 && (i == 0 || j == 0)) {
                     board[i + x][j + y].clicked = true;
+                    openNeighbors(i + x, j + y);
                 }
             }
         }
