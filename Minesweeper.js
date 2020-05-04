@@ -8,7 +8,7 @@ function setup() {
             board[r][c] = new Cell(r * 40, c * 40, 0);
         }
     }
-    for (let i = 0; i < 11; i++) {
+    for (let i = 0; i < 10; i++) {
         let bombCellPos = [
             floor(random(board.length)),
             floor(random(board.length)),
@@ -42,19 +42,48 @@ function mousePressed() {
                 element.y <= mouseY &&
                 element.y + 40 >= mouseY
             ) {
-                element.clicked = true;
-                if (element.type == -1) {
-                    noLoop();
-                    board.forEach((element) => {
-                        element.forEach((element) => {
-                            if (element.type == -1) {
-                                element.clicked = true;
-                            }
+                if (mouseButton == LEFT) {
+                    element.clicked = true;
+                    if (element.type == -1) {
+                        noLoop();
+                        board.forEach((element) => {
+                            element.forEach((element) => {
+                                if (element.type == -1) {
+                                    if (!element.flagged) {
+                                        element.clicked = true;
+                                    }
+                                }
+                                if (element.flagged && element.type > -1) {
+                                    push();
+                                    stroke("rgb(255, 0, 0)");
+                                    strokeWeight(5);
+                                    line(
+                                        element.x,
+                                        element.y,
+                                        element.x + 40,
+                                        element.y + 40
+                                    );
+                                    line(
+                                        element.x + 40,
+                                        element.y,
+                                        element.x,
+                                        element.y + 40
+                                    );
+                                    pop();
+                                    element.flagged = false;
+                                }
+                            });
                         });
-                    });
-                    alert("Game Over");
-                } else if (element.type == 0) {
-                    openNeighbors(element.x / 40, element.y / 40);
+                        alert("Game Over");
+                    } else if (element.type == 0) {
+                        openNeighbors(element.x / 40, element.y / 40);
+                    }
+                } else if (mouseButton == RIGHT) {
+                    if (!element.flagged) {
+                        element.flagged = true;
+                    } else {
+                        element.flagged = false;
+                    }
                 }
                 return;
             }
