@@ -4,12 +4,26 @@ class Cell {
         this.y = y;
         this.type = type;
         this.clicked = false;
+        this.flagged = false;
     }
 
     show() {
         if (!this.clicked) {
             fill(51);
             rect(this.x, this.y, 40, 40);
+            if (this.flagged) {
+                fill(194, 0, 0);
+                rect(this.x + 10, this.y + 15, 5, 15);
+                fill(255, 0, 0);
+                triangle(
+                    this.x + 10,
+                    this.y + 10,
+                    this.x + 30,
+                    this.y + 15,
+                    this.x + 10,
+                    this.y + 20
+                );
+            }
         } else {
             if (this.type >= 1) {
                 push();
